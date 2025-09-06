@@ -3342,9 +3342,18 @@ BResult calcBattle(const BStat& attacker, const BStat& defender, bool showDetail
             ma[s] *= penR;
             aa[s] *= penR;
         }
-        pa[s] *= 1 + 0.03 * levelPower * (1 - 2 * s);
-        ma[s] *= 1 + 0.03 * levelPower * (1 - 2 * s);
-        aa[s] *= 1 + 0.03 * levelPower * (1 - 2 * s);
+        if (s == 0 && levelPower > 0)
+        {
+            pa[s] *= 1 + 0.03 * levelPower;
+            ma[s] *= 1 + 0.03 * levelPower;
+            aa[s] *= 1 + 0.03 * levelPower;
+        }
+        if (s == 1 && levelPower < 0)
+        {
+            pa[s] *= 1 - 0.03 * levelPower;
+            ma[s] *= 1 - 0.03 * levelPower;
+            aa[s] *= 1 - 0.03 * levelPower;
+        }
         if (isC)
         {
             pa[s] *= (1 - b1.cDef / 100.0);
@@ -3356,6 +3365,18 @@ BResult calcBattle(const BStat& attacker, const BStat& defender, bool showDetail
             pa[s] *= (1 - b1.sDef / 100.0);
             ma[s] *= (1 - b1.sDef / 100.0);
             aa[s] *= (1 - b1.sDef / 100.0);
+        }
+        if (s == 0 && levelPower < 0)
+        {
+            pa[s] *= 1 + 0.03 * levelPower;
+            ma[s] *= 1 + 0.03 * levelPower;
+            aa[s] *= 1 + 0.03 * levelPower;
+        }
+        if (s == 1 && levelPower > 0)
+        {
+            pa[s] *= 1 - 0.03 * levelPower;
+            ma[s] *= 1 - 0.03 * levelPower;
+            aa[s] *= 1 - 0.03 * levelPower;
         }
 
         int sldRemain = (int)b1.sld;
@@ -3484,14 +3505,7 @@ BResult calcBattle(const BStat& attacker, const BStat& defender, bool showDetail
                 b1.mBrcP + (b1.psvSkl & AURA_BO && (b1.hp > b1.hpM * 0.7 && b1.sld > b1.sldM * 0.7) ? 30 : 0),
                 0, b1.mBrcA, (b0.psvSkl & AURA_SHENG) ? 80 : 75,
                 b0.psvSkl & AURA_DUNH, b0.psvSkl & AURA_ZHI, -1, b0.psvSkl & AURA_DIAN);
-            if (s == 0 && levelPower < 0)
-            {
-                mRfl *= 1 - 0.03 * levelPower;
-            }
-            if (s == 1 && levelPower > 0)
-            {
-                mRfl *= 1 + 0.03 * levelPower;
-            }
+            mRfl *= 1 - 0.03 * levelPower * (1 - 2 * s);
             int ma2 = mRfl;
             ma[1 - s] = mRfl;
             if (b0.role == ROLE_MIN && b0.sklC == -2) ma2 = 0;
@@ -3530,14 +3544,7 @@ BResult calcBattle(const BStat& attacker, const BStat& defender, bool showDetail
                 b1.pBrcP, 0, b1.pBrcA,
                 (b0.psvSkl & AURA_SHENG) ? 80 : 75,
                 b0.psvSkl & AURA_DUNH, b0.psvSkl & AURA_ZHI, -1, b0.psvSkl & AURA_DIAN);
-            if (s == 0 && levelPower < 0)
-            {
-                pRfl *= 1 - 0.03 * levelPower;
-            }
-            if (s == 1 && levelPower > 0)
-            {
-                pRfl *= 1 + 0.03 * levelPower;
-            }
+            pRfl *= 1 - 0.03 * levelPower * (1 - 2 * s);
             int pa2 = pRfl;
             pa[1 - s] = pRfl;
             if (b0.role == ROLE_MIN && b0.sklC == -1) pa2 = 0;
