@@ -507,7 +507,7 @@ int64_t attrSeedTotal;
 const int speedReduceMax = 80;
 
 char buf[10000];
-int version = 10;
+int version = 20;
 int rseedGlobal = time(NULL);
 int numThreads = 4;
 int numTests = 1000;
@@ -1241,8 +1241,8 @@ bool readPlayer(FILE* fp, Player& pc)
         b.sldMR = 0;
         b.sklC = (b.role == ROLE_WU ? (pc.growth > 106800 ? 106800 : pc.growth) : 0);
         b.houC = 0;
-        b.atkLvl = pc.kfLvl >= 1600 ? 16 : pc.kfLvl / 100;
-        b.defLvl = pc.kfLvl >= 1600 ? 16 : pc.kfLvl / 100;
+        b.atkLvl = 0;
+        b.defLvl = 0;
         b.alias = pc.alias;
     }
     else
@@ -1697,7 +1697,7 @@ void prepareNpcBStat(const NonPlayer& npc, BStat& b)
         b.mRdc = 0.0;
         b.sRateB = npc.lvl * sklRate[npc.role][0] / sklRate[npc.role][1];
         b.cRateB = npc.lvl * crtRate[npc.role][0] / crtRate[npc.role][1];
-        b.defLvl = b.atkLvl = 0;
+        b.defLvl = b.atkLvl = -1;
         b.tAgi = npc.lvl * 1.0;
         b.psvSkl = npc.prefix * 5 + npc.prefixCount;
         break;
@@ -1722,7 +1722,7 @@ void prepareNpcBStat(const NonPlayer& npc, BStat& b)
         b.mRdc = 0.0;
         b.sRateB = npc.lvl * sklRate[npc.role][0] / sklRate[npc.role][1];
         b.cRateB = npc.lvl * crtRate[npc.role][0] / crtRate[npc.role][1];
-        b.defLvl = b.atkLvl = 0;
+        b.defLvl = b.atkLvl = -1;
         b.tAgi = npc.lvl * 1.0;
         b.psvSkl = npc.prefix * 5 + npc.prefixCount;
         break;
@@ -1747,7 +1747,7 @@ void prepareNpcBStat(const NonPlayer& npc, BStat& b)
         b.mRdc = 0.0;
         b.sRateB = npc.lvl * sklRate[npc.role][0] / sklRate[npc.role][1];
         b.cRateB = npc.lvl * crtRate[npc.role][0] / crtRate[npc.role][1];
-        b.defLvl = b.atkLvl = 0;
+        b.defLvl = b.atkLvl = -1;
         b.tAgi = npc.lvl * 1.0;
         b.psvSkl = npc.prefix * 5 + npc.prefixCount;
         break;
@@ -1772,7 +1772,7 @@ void prepareNpcBStat(const NonPlayer& npc, BStat& b)
         b.mRdc = 0.0;
         b.sRateB = npc.lvl * sklRate[npc.role][0] / sklRate[npc.role][1];
         b.cRateB = npc.lvl * crtRate[npc.role][0] / crtRate[npc.role][1];
-        b.defLvl = b.atkLvl = 0;
+        b.defLvl = b.atkLvl = -1;
         b.tAgi = npc.lvl * 1.0;
         b.psvSkl = npc.prefix * 5 + npc.prefixCount;
         break;
@@ -1797,7 +1797,7 @@ void prepareNpcBStat(const NonPlayer& npc, BStat& b)
         b.mRdc = 0.0;
         b.sRateB = npc.lvl * sklRate[npc.role][0] / sklRate[npc.role][1];
         b.cRateB = npc.lvl * crtRate[npc.role][0] / crtRate[npc.role][1];
-        b.defLvl = b.atkLvl = 0;
+        b.defLvl = b.atkLvl = -1;
         b.tAgi = npc.lvl * 1.0;
         b.psvSkl = (AURA_SHANG | AURA_SHEN | AURA_REN | AURA_WU | AURA_DI);
         break;
@@ -1822,7 +1822,7 @@ void prepareNpcBStat(const NonPlayer& npc, BStat& b)
         b.mRdc = 0.0;
         b.sRateB = npc.lvl * sklRate[npc.role][0] / sklRate[npc.role][1];
         b.cRateB = npc.lvl * crtRate[npc.role][0] / crtRate[npc.role][1];
-        b.defLvl = b.atkLvl = 0;
+        b.defLvl = b.atkLvl = -1;
         b.tAgi = npc.lvl * 1.0;
         b.psvSkl = (AURA_XIAO | AURA_SHANG | AURA_SHEN | AURA_RE | AURA_WU | AURA_DI);
         break;
@@ -1847,7 +1847,7 @@ void prepareNpcBStat(const NonPlayer& npc, BStat& b)
         b.mRdc = 0.0;
         b.sRateB = npc.lvl * sklRate[npc.role][0] / sklRate[npc.role][1];
         b.cRateB = npc.lvl * crtRate[npc.role][0] / crtRate[npc.role][1];
-        b.defLvl = b.atkLvl = 0;
+        b.defLvl = b.atkLvl = -1;
         b.tAgi = npc.lvl * 1.0;
         b.psvSkl = (AURA_DUN | AURA_SHANG | AURA_SHEN | AURA_REN | AURA_DI);
         break;
@@ -1872,7 +1872,7 @@ void prepareNpcBStat(const NonPlayer& npc, BStat& b)
         b.mRdc = 0.0;
         b.sRateB = npc.lvl * sklRate[npc.role][0] / sklRate[npc.role][1];
         b.cRateB = npc.lvl * crtRate[npc.role][0] / crtRate[npc.role][1];
-        b.defLvl = b.atkLvl = 0;
+        b.defLvl = b.atkLvl = -1;
         b.tAgi = npc.lvl * 1.0;
         b.psvSkl = (AURA_SHANG | AURA_SHEN | AURA_CI | AURA_REN | AURA_DI);
         break;
@@ -1897,7 +1897,7 @@ void prepareNpcBStat(const NonPlayer& npc, BStat& b)
         b.mRdc = 0.0;
         b.sRateB = npc.lvl * sklRate[npc.role][0] / sklRate[npc.role][1];
         b.cRateB = npc.lvl * crtRate[npc.role][0] / crtRate[npc.role][1];
-        b.defLvl = b.atkLvl = 0;
+        b.defLvl = b.atkLvl = -1;
         b.tAgi = npc.lvl * 1.0;
         b.psvSkl = (AURA_XIAO | AURA_SHANG | AURA_SHEN | AURA_RE | AURA_WU | AURA_DI);
         break;
@@ -1922,7 +1922,7 @@ void prepareNpcBStat(const NonPlayer& npc, BStat& b)
         b.mRdc = 0.0;
         b.sRateB = npc.lvl * sklRate[npc.role][0] / sklRate[npc.role][1];
         b.cRateB = npc.lvl * crtRate[npc.role][0] / crtRate[npc.role][1];
-        b.defLvl = b.atkLvl = 0;
+        b.defLvl = b.atkLvl = -1;
         b.tAgi = npc.lvl * 1.0;
         b.psvSkl = (AURA_SHENG | AURA_SHANG | AURA_SHEN | AURA_CI | AURA_DI);
         break;
@@ -1934,7 +1934,7 @@ void prepareNpcBStat(const NonPlayer& npc, BStat& b)
         b.hpRecP = b.sldRecP = 0;
         b.lchP = b.rflP = b.sRateB = b.cRateB = 0.0;
         b.pRdc = b.mRdc = 0.0;
-        b.defLvl = b.atkLvl = 0;
+        b.defLvl = b.atkLvl = -1;
         b.tAgi = npc.lvl * 1.0;
         b.psvSkl = npc.prefix;
         break;
@@ -1960,7 +1960,7 @@ void prepareNpcBStat(const NonPlayer& npc, BStat& b)
         b.mRdc = npc.lvl * 10.0;
         b.sRateB = npc.lvl * sklRate[npc.role][0] / sklRate[npc.role][1];
         b.cRateB = npc.lvl * crtRate[npc.role][0] / crtRate[npc.role][1];
-        b.defLvl = b.atkLvl = 0;
+        b.defLvl = b.atkLvl = -1;
         b.tAgi = npc.lvl * 1.0;
         b.psvSkl = (AURA_DUN | AURA_SHENG | AURA_SHANG | AURA_SHEN | AURA_REN | AURA_RE | AURA_WU | AURA_DI);
         break;
@@ -2555,20 +2555,14 @@ BResult calcBattle(const BStat& attacker, const BStat& defender, bool showDetail
     b[0] = attacker;
     b[1] = defender;
 
-    if (defMode == 0)
+    int levelPower = 0;
+    // 野怪不计算攻防等级
+    if (b[1].atkLvl >= 0)
     {
-        if (b[0].atkLvl > 0 && b[0].defLvl > 0 && b[0].rankLevel < 0)
-        {
-            b[0].atkLvl -= rankLevel;
-            b[0].defLvl -= rankLevel;
-        }
-        if (b[1].atkLvl > 0 && b[1].defLvl > 0 && b[1].rankLevel > 0)
-        {
-            b[1].atkLvl += rankLevel;
-            b[1].defLvl += rankLevel;
-        }
+        levelPower = b[0].atkLvl - b[1].atkLvl > 20 ? 20 : b[0].atkLvl - b[1].atkLvl;
+        // 环境争夺
+        levelPower -= b[1].rankLevel;
     }
-
 
     if (rseed == NULL) rseed = &rseedGlobal;
 
@@ -3348,13 +3342,9 @@ BResult calcBattle(const BStat& attacker, const BStat& defender, bool showDetail
             ma[s] *= penR;
             aa[s] *= penR;
         }
-        if (b0.atkLvl > b1.atkLvl && b1.atkLvl > 0 && b0.atkLvl > 0)
-        {
-            int lvlDiff = b0.atkLvl - b1.atkLvl > 20 ? 20 : b0.atkLvl - b1.atkLvl;
-            pa[s] *= 1 + 0.03 * lvlDiff;
-            ma[s] *= 1 + 0.03 * lvlDiff;
-            aa[s] *= 1 + 0.03 * lvlDiff;
-        }
+        pa[s] *= 1 + 0.03 * levelPower;
+        ma[s] *= 1 + 0.03 * levelPower;
+        aa[s] *= 1 + 0.03 * levelPower;
         if (isC)
         {
             pa[s] *= (1 - b1.cDef / 100.0);
@@ -3378,11 +3368,6 @@ BResult calcBattle(const BStat& attacker, const BStat& defender, bool showDetail
                 (b1.psvSkl & AURA_SHENG) ? 80 : 75,
                 b1.psvSkl & AURA_DUNH, b1.psvSkl & AURA_ZHI,
                 (b0.psvSkl & AURA_HONG) ? b0.lvl / 2 : -1, b1.psvSkl & AURA_DIAN);
-            if (b1.defLvl > b0.defLvl && b1.defLvl > 0 && b0.defLvl > 0)
-            {
-                int lvlDiff = b1.defLvl - b0.defLvl > 20 ? 20 : b1.defLvl - b0.defLvl;
-                ma[s] *= 1 - 0.03 * lvlDiff;
-            }
             int ma2 = (int)ma[s];
             if (b1.role == ROLE_MIN && (b1.minFlag || b1.sklC == -2)) ma2 = 0;
             if (b1.role == ROLE_WEI && b1.sklC) ma2 /= 10;
@@ -3425,11 +3410,6 @@ BResult calcBattle(const BStat& attacker, const BStat& defender, bool showDetail
                 (b1.psvSkl & AURA_SHENG) ? 80 : 75,
                 b1.psvSkl & AURA_DUNH, b1.psvSkl & AURA_ZHI,
                 (b0.psvSkl & AURA_HONG) ? b0.lvl / 2 : -1, b1.psvSkl & AURA_DIAN);
-            if (b1.defLvl > b0.defLvl && b1.defLvl > 0 && b0.defLvl > 0)
-            {
-                int lvlDiff = b1.defLvl - b0.defLvl > 20 ? 20 : b1.defLvl - b0.defLvl;
-                pa[s] *= 1 - 0.03 * lvlDiff;
-            }
             int pa2 = (int)pa[s];
             if (b1.role == ROLE_MIN && (b1.minFlag || b1.sklC == -1)) pa2 = 0;
             if (b1.role == ROLE_WEI && b1.sklC) pa2 /= 10;
@@ -3467,11 +3447,6 @@ BResult calcBattle(const BStat& attacker, const BStat& defender, bool showDetail
         }
         if (aa[s] > 0)
         {
-            if (b1.defLvl > b0.defLvl && b1.defLvl > 0 && b0.defLvl > 0)
-            {
-                int lvlDiff = b1.defLvl - b0.defLvl > 20 ? 20 : b1.defLvl - b0.defLvl;
-                aa[s] *= 1 - 0.03 * lvlDiff;
-            }
             int aa2 = (int)aa[s];
             if (b1.role == ROLE_MIN && (b1.minFlag || b1.sklC == -3)) aa2 = 0;
             if (b1.role == ROLE_WEI && b1.sklC) aa2 /= 10;
@@ -3509,15 +3484,9 @@ BResult calcBattle(const BStat& attacker, const BStat& defender, bool showDetail
                 b1.mBrcP + (b1.psvSkl & AURA_BO && (b1.hp > b1.hpM * 0.7 && b1.sld > b1.sldM * 0.7) ? 30 : 0),
                 0, b1.mBrcA, (b0.psvSkl & AURA_SHENG) ? 80 : 75,
                 b0.psvSkl & AURA_DUNH, b0.psvSkl & AURA_ZHI, -1, b0.psvSkl & AURA_DIAN);
-            if (b1.atkLvl > b0.atkLvl && b1.atkLvl > 0 && b0.atkLvl > 0)
+            if (levelPower < 0)
             {
-                int lvlDiff = b1.atkLvl - b0.atkLvl > 20 ? 20 : b1.atkLvl - b0.atkLvl;
-                mRfl *= 1 + 0.03 * lvlDiff;
-            }
-            if (b1.defLvl < b0.defLvl && b1.defLvl > 0 && b0.defLvl > 0)
-            {
-                int lvlDiff = b0.defLvl - b1.defLvl > 20 ? 20 : b0.defLvl - b1.defLvl;
-                mRfl *= 1 - 0.03 * lvlDiff;
+                mRfl *= 1 - 0.03 * levelPower;
             }
             int ma2 = mRfl;
             ma[1 - s] = mRfl;
@@ -3557,15 +3526,9 @@ BResult calcBattle(const BStat& attacker, const BStat& defender, bool showDetail
                 b1.pBrcP, 0, b1.pBrcA,
                 (b0.psvSkl & AURA_SHENG) ? 80 : 75,
                 b0.psvSkl & AURA_DUNH, b0.psvSkl & AURA_ZHI, -1, b0.psvSkl & AURA_DIAN);
-            if (b1.atkLvl > b0.atkLvl && b1.atkLvl > 0 && b0.atkLvl > 0)
+            if (levelPower < 0)
             {
-                int lvlDiff = b1.atkLvl - b0.atkLvl > 20 ? 20 : b1.atkLvl - b0.atkLvl;
-                pRfl *= 1 + 0.03 * lvlDiff;
-            }
-            if (b1.defLvl < b0.defLvl && b1.defLvl > 0 && b0.defLvl > 0)
-            {
-                int lvlDiff = b0.defLvl - b1.defLvl > 20 ? 20 : b0.defLvl - b1.defLvl;
-                pRfl *= 1 - 0.03 * lvlDiff;
+                pRfl *= 1 - 0.03 * levelPower;
             }
             int pa2 = pRfl;
             pa[1 - s] = pRfl;
