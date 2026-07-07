@@ -305,6 +305,9 @@ struct BStat
 
     int rankLevel; // 段位强化等级
 
+    int renCounter; // 手动设置忍无可忍回合数
+    int bugPoint; // 手动配置bug加点 xyfnmsl
+
     std::string alias;
 };
 
@@ -340,6 +343,8 @@ struct Player
     uint8_t amul[AMUL_COUNT];
     int type;
     int rankLevel;
+    int renCounter;
+    int bugPoint;
     double weight;
     std::string alias;
     BStat* pBStat;
@@ -507,7 +512,7 @@ int64_t attrSeedTotal;
 const int speedReduceMax = 80;
 
 char buf[10000];
-int version = 20;
+int version = 30;
 int rseedGlobal = time(NULL);
 int numThreads = 4;
 int numTests = 1000;
@@ -1053,6 +1058,44 @@ bool readPlayer(FILE* fp, Player& pc)
     else
     {
         pc.rankLevel = rankLevel;
+    }
+    if (buf[0] == 'T' && buf[1] == '=')
+    {
+        if (!isSignedNumber(buf + 2) || sscanf(buf + 2, "%d", &pc.renCounter) != 1)
+        {
+            printf("Error: Invalid \"T=\" parameter: %s\n", buf + 2);
+            fseek(fp, pos, SEEK_SET);
+            return false;
+        }
+        if (fscanf(fp, "%s", buf) != 1)
+        {
+            printf("Error: EOF after \"T=\"\n");
+            fseek(fp, pos, SEEK_SET);
+            return false;
+        }
+    }
+    else
+    {
+        pc.renCounter = 0;
+    }
+    if (buf[0] == 'P' && buf[1] == '=')
+    {
+        if (!isSignedNumber(buf + 2) || sscanf(buf + 2, "%d", &pc.bugPoint) != 1)
+        {
+            printf("Error: Invalid \"P=\" parameter: %s\n", buf + 2);
+            fseek(fp, pos, SEEK_SET);
+            return false;
+        }
+        if (fscanf(fp, "%s", buf) != 1)
+        {
+            printf("Error: EOF after \"P=\"\n");
+            fseek(fp, pos, SEEK_SET);
+            return false;
+        }
+    }
+    else
+    {
+        pc.bugPoint = 0;
     }
     if (strcmp(buf, "STAT") == 0)
     {
@@ -2164,6 +2207,8 @@ void preparePcBStat(const Player& pc, BStat& b)
     }
 
     b.mode = pc.mode;
+    b.renCounter = pc.renCounter;
+    b.bugPoint = pc.bugPoint;
     b.rankLevel = pc.rankLevel;
 
     b.atkLvl = pc.kfLvl >= 1600 ? 16 : pc.kfLvl / 100;
@@ -2694,7 +2739,7 @@ BResult calcBattle(const BStat& attacker, const BStat& defender, bool showDetail
         }
         if (b[i].role == ROLE_MO)
         {
-            b[i].mBrcA += int((b[i].tSpr + b[i].tInt) * 0.2);
+            b[i].mBrcA += int((b[i].bugPoint > 0 ? b[i].bugPoint : b[i].tSpr + b[i].tInt) * 0.2);
         }
         b[i].hpRecRR -= b[i].amul[AMUL_REC];
         b[i].sldRecRR -= b[i].amul[AMUL_REC];
@@ -2881,7 +2926,11 @@ BResult calcBattle(const BStat& attacker, const BStat& defender, bool showDetail
         b[s].spdC -= b[1 - s].spdC;
         b[1 - s].spdC = 0.0;
         int renCounter = 3;
-        if (b[lastSide].tAgi > b[1 - lastSide].tAgi && b[lastSide].tAgi >= b[1 - lastSide].tAgi * 6)
+        if (b[1 - lastSide].renCounter == 3 || b[1 - lastSide].renCounter == 4)
+        {
+            renCounter = b[1 - lastSide].renCounter;
+        }
+        else if (b[lastSide].tAgi > b[1 - lastSide].tAgi && b[lastSide].tAgi >= b[1 - lastSide].tAgi * 6)
         {
             renCounter = 4;
         }
@@ -3166,7 +3215,11 @@ BResult calcBattle(const BStat& attacker, const BStat& defender, bool showDetail
             case ROLE_MO:
             {
                 int maDif = 0;
-                if (b0.tSpr > b0.tInt)
+                if (b0.growth > 0)
+                {
+                    maDif = b0.growth;
+                }
+                else if (b0.tSpr > b0.tInt)
                 {
                     maDif = int(int((b0.tSpr / b0.tInt - 1) * 100) / 2);
                 }
