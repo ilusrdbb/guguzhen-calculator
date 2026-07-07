@@ -512,7 +512,7 @@ int64_t attrSeedTotal;
 const int speedReduceMax = 80;
 
 char buf[10000];
-int version = 30;
+int version = 40;
 int rseedGlobal = time(NULL);
 int numThreads = 4;
 int numTests = 1000;
@@ -3127,7 +3127,11 @@ BResult calcBattle(const BStat& attacker, const BStat& defender, bool showDetail
         }
         if (b0.role == ROLE_YA)
         {
-            pa[s] += int((b0.mAtkB + b0.mAtkA) * 0.2 * round) + int((b0.pAtkB + b0.pAtkA) * 0.2 * round);
+            pa[s] += int(pa[s] * 0.2 * round) + int((b0.pAtkB + b0.pAtkA) * 0.2 * round);
+            if (b0.psvSkl & AURA_FEI)
+            {
+                pa[s] += int(b0.hpM * 0.18 * 0.2 * round);
+            }
         }
 
         double moRfl = (((b1.mAtkB + b1.mAtkA) * 0.55) + b1.sldM * 0.07) * (1 + b1.mAtkR * 0.01);
