@@ -512,7 +512,7 @@ int64_t attrSeedTotal;
 const int speedReduceMax = 80;
 
 char buf[10000];
-int version = 40;
+int version = 50;
 int rseedGlobal = time(NULL);
 int numThreads = 4;
 int numTests = 1000;
@@ -2872,7 +2872,7 @@ BResult calcBattle(const BStat& attacker, const BStat& defender, bool showDetail
             }
         }
         // ya process after xia
-        if (b[i].role == ROLE_YA && !(b[i].myst & MYST_FIERCE))
+        if (b[i].role == ROLE_YA)
         {
             if (b[i].mode == 0 || (b[i].myst & MYST_FIERCE))
             {
