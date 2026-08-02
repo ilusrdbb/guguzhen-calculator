@@ -353,7 +353,7 @@ struct Player
 };
 
 const char* const npcName[NPC_COUNT] = { "MU", "ZHU", "DENG", "SHOU", "MU2", "ZHU2", "DENG2", "SHOU2", "YU2", "HAO2", "LIU", "SHI" };
-const char* const pcName[PC_COUNT] = { "MO", "LIN", "AI", "MENG", "WEI", "YI", "MING", "MIN", "WU", "XI", "XIA", "YA" };
+const char* const pcName[PC_COUNT] = { "MO", "LIN", "AI", "MENG", "WEI", "YI", "MING", "MIN", "WU", "XI", "XIA", "YA", "QI" };
 const char* const gearName[GEAR_COUNT] = {
     "NONE", "SWORD", "BOW", "STAFF", "BLADE", "ASSBOW", "DAGGER", "WAND", "SHIELD",
     "CLAYMORE", "SPEAR", "COLORFUL", "LIMPIDWAND", "GLOVES", "BRACELET", "VULTURE", "RING", "DEVOUR", "REFRACT",
