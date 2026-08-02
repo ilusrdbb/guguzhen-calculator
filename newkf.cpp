@@ -73,7 +73,8 @@ enum
     ROLE_XI,       // 希
     ROLE_XIA,      // 霞
     ROLE_YA,       // 雅
-    PC_COUNT = 12,
+    ROLE_QI,       // 绮
+    PC_COUNT = 13,
 
     ATTR_STR = 0, // 力量
     ATTR_AGI,     // 敏捷
@@ -274,6 +275,7 @@ struct BStat
     int myst;       // 神秘属性组合
     int sklC;       // 角色技能计数(星火、星芒、神秘法杖的初次技能、闪避充能、成长值、蛛网)
     int houC;       // 后发制人计数
+    double qiAbsorb; // 绮青晶融合累计吸收值
     uint16_t wish[WISH_COUNT]; // 许愿池点数
     uint8_t amul[AMUL_COUNT]; // 护身符点数
     bool hpPot;    // 生命药水是否已使用
@@ -512,7 +514,7 @@ int64_t attrSeedTotal;
 const int speedReduceMax = 80;
 
 char buf[10000];
-int version = 50;
+int version = 60;
 int rseedGlobal = time(NULL);
 int numThreads = 4;
 int numTests = 1000;
@@ -2273,6 +2275,7 @@ void preparePcBStat(const Player& pc, BStat& b)
     b.myst = 0;
     b.sklC = (b.role == ROLE_WU ? (pc.growth > 106800 ? 106800 : pc.growth) : 0);
     b.houC = 0;
+    b.qiAbsorb = 0;
     for (int i = 0; i < WISH_COUNT; ++i)
     {
         b.wish[i] = pc.wish[i];
@@ -2809,6 +2812,10 @@ BResult calcBattle(const BStat& attacker, const BStat& defender, bool showDetail
             {
                 hpMAdd += 20;
             }
+            if (b[i].role == ROLE_QI)
+            {
+                hpMAdd += 15;
+            }
             if (b[i].role == ROLE_MING)
             {
                 hpMAdd += 90;
@@ -2848,6 +2855,7 @@ BResult calcBattle(const BStat& attacker, const BStat& defender, bool showDetail
         b[i].sldPot = false;
         b[i].ziFlag = false;
         b[i].minFlag = (b[i].role == ROLE_MIN);
+        b[i].qiAbsorb = 0.0;
     }
     // process after init atk and def roles
     for (int i = 0; i < 2; ++i)
@@ -3042,6 +3050,10 @@ BResult calcBattle(const BStat& attacker, const BStat& defender, bool showDetail
             }
             isMC = (b0.myst & MYST_BRACELET && isC && rand100(rseed) < 20);
         }
+        if (b0.role == ROLE_QI && roundN[s] % 3 == 0)
+        {
+            isS = true;
+        }
 
         // init recovery base
         b0.hpS = b0.hpM;
@@ -3128,6 +3140,7 @@ BResult calcBattle(const BStat& attacker, const BStat& defender, bool showDetail
         if (b0.role == ROLE_YA)
         {
             pa[s] += int(pa[s] * 0.2 * round) + int((b0.pAtkB + b0.pAtkA) * 0.2 * round);
+            // sb bug
             if (b0.psvSkl & AURA_FEI)
             {
                 pa[s] += int(b0.hpM * 0.18 * 0.2 * round);
@@ -3304,6 +3317,11 @@ BResult calcBattle(const BStat& attacker, const BStat& defender, bool showDetail
                 pa[s] += int((b0.pAtkB + b0.pAtkA) * 3.0);
                 break;
             }
+            case ROLE_QI:
+            {
+                pa[s] += int(b0.qiAbsorb);
+                break;
+            }
             }
         }
         if (b0.role == ROLE_WEI)
@@ -3419,9 +3437,10 @@ BResult calcBattle(const BStat& attacker, const BStat& defender, bool showDetail
         }
         if (isS)
         {
-            pa[s] *= (1 - b1.sDef / 100.0);
-            ma[s] *= (1 - b1.sDef / 100.0);
-            aa[s] *= (1 - b1.sDef / 100.0);
+            int sDef = b1.sDef + (b1.role == ROLE_QI ? 35 : 0);
+            pa[s] *= (1 - sDef / 100.0);
+            ma[s] *= (1 - sDef / 100.0);
+            aa[s] *= (1 - sDef / 100.0);
         }
         if (s == 0 && levelPower < 0)
         {
@@ -3651,6 +3670,9 @@ BResult calcBattle(const BStat& attacker, const BStat& defender, bool showDetail
             b1.sldPot = true;
         }
         if (b1.role == ROLE_MIN && b1.minFlag) b1.minFlag = false;
+
+        if (b0.role == ROLE_QI) b0.qiAbsorb += sd[1] * 0.5;
+        if (b1.role == ROLE_QI) b1.qiAbsorb += sd[0] * 0.5;
 
         if (b0.spdRR >= speedReduceMax) b0.spdRR = speedReduceMax;
         if (b0.role == ROLE_YI && b0.spdRR > 0) b0.spdRR = 0;
