@@ -514,7 +514,7 @@ int64_t attrSeedTotal;
 const int speedReduceMax = 80;
 
 char buf[10000];
-int version = 60;
+int version = 70;
 int rseedGlobal = time(NULL);
 int numThreads = 4;
 int numTests = 1000;
@@ -1450,7 +1450,7 @@ void readConfig(const char* fileName)
         printf("Cannot open config file %s\n", fileName ? fileName : "newkf.in");
         exit(-1);
     }
-    if (fscanf(fp, "%d", &auraMax) != 1 || auraMax < 0 || auraMax > 400)
+    if (fscanf(fp, "%d", &auraMax) != 1 || auraMax < 0 || auraMax > 500)
     {
         printf("Error reading aura data\n");
         exit(-1);
@@ -2527,8 +2527,8 @@ inline int calcDefRate(double def, int defP, double brc, double cBrc, double brc
             brcA += hongBrcA;
         }
     }
-    int brcP = (int)(brc * (isDunh ? 0.65 : 1.0)) + (int)(cBrc * (isDunh ? 0.65 : 1.0));
-    int r = int((isDian ? int(def * 1.3) : def) * (100 + defP - brcP));
+    double brcP = (brc + cBrc) * (isDunh ? 0.65 : 1.0);
+    int r = int((isDian ? def * 1.3 : def) * (100.0 + defP - brcP));
     r = (r >= 0 ? r : r - 99) / 100 - int(brcA);
     r = r >= 0 ? r / 10 : -30;
     r = (isZhi && r < 10) ? 10 : r;
@@ -2536,7 +2536,7 @@ inline int calcDefRate(double def, int defP, double brc, double cBrc, double brc
     if (debug)
     {
         printf("DefRate: def=%d(+%d%%) brc=%d%%+%d dr=%d dunh=%s zhi=%s hongA=%d dian=%s\n",
-            int(def), defP, brcP, int(brcA), r,
+            int(def), defP, int(brcP), int(brcA), r,
             isDunh ? "true" : "false", isZhi ? "true" : "false", hongBrcA, isDian ? "true" : "false");
     }
     return r;
