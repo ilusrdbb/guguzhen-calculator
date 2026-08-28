@@ -2528,7 +2528,7 @@ inline int calcDefRate(double def, int defP, double brc, double cBrc, double brc
         }
     }
     // 神秘取整 我服啦 xyfwcnm
-    double brcP = isDunh ? int(0.65 * brc) + int(0.65 * cBrc): brc + cBrc;
+    double brcP = isDunh ? int(0.65 * brc) + int(0.65 * cBrc) : brc + cBrc;
     int r = int((isDian ? def * 1.3 : def) * (100.0 + defP - brcP));
     r = (r >= 0 ? r : r - 99) / 100 - int(brcA);
     r = r >= 0 ? r / 10 : -30;
